@@ -1,5 +1,3 @@
-import fire
-
 from octodns import manager
 
 
@@ -41,11 +39,3 @@ class SyncAction(object):
             dry_run=simulate,
             force=False,
         )
-
-
-def main():
-    fire.Fire(SyncAction, name='sync_action')
-
-
-if __name__ == '__main__':
-    main()

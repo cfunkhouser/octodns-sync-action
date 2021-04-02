@@ -3,12 +3,13 @@ import setuptools
 __version__ = '0.0.1'
 
 setuptools.setup(
-    name='sync_action',
+    name='octodns-sync-action',
     version=__version__,
     author='Christian Funkhouser',
     author_email='christian@funkhouse.rs',
     description='OctoDNS Sync Action for GitHub',
     url='https://github.com/cfunkhouser/octodns-sync-action',
+    packages=['octosync'],
     project_urls={
         'Bug Tracker':
             'https://github.com/cfunkhouser/octodns-sync-action/issues',
