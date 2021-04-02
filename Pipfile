@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 octodns = "~=0.9"
-fire = "*"
+fire = "~=0.4"
 
 [dev-packages]
 

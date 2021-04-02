@@ -1,0 +1,17 @@
+name: "octodns-sync-action"
+description: "Sync DNS configuration to a cloud DNS provider using OctoDNS"
+inputs:
+  octodns_config_file:
+    description: "OctoDNS config file path, relative to the root of your repo."
+    required: true
+  simulate:
+    description: "Whether to simulate or take action. Analogous to octodns-sync's --doit flag."
+    default: "true"
+    required: false
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.octodns_config_file }}
+    - push
+    - "--simulate ${{ inputs.simulate }}"
