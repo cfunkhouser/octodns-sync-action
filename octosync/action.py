@@ -24,18 +24,13 @@ class SyncActionManager(manager.Manager):
                 'Incorrect provider config for html')
 
 
-class SyncAction(object):
-
-    _manager: manager.Manager
-
-    def __init__(self, config_file: str, /):
-        self._manager = SyncActionManager(config_file)
-
-    def push(self, simulate: bool = True):
-        self._manager.sync(
-            eligible_zones=[],
-            eligible_sources=[],
-            eligible_targets=[],
-            dry_run=simulate,
-            force=False,
-        )
+def sync_action(config_file: str, /, doit: bool = False):
+    """Command to handle executing the octodns sync as a GitHub Action."""
+    m = SyncActionManager(config_file)
+    m.sync(
+        eligible_zones=[],
+        eligible_sources=[],
+        eligible_targets=[],
+        dry_run=(not doit),
+        force=False,
+    )

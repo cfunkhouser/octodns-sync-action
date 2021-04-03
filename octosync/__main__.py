@@ -4,7 +4,7 @@ from . import action
 
 
 def main():
-    fire.Fire(action.SyncAction, name='action')
+    fire.Fire(action.sync_action, name='octosync')
 
 
 if __name__ == '__main__':
