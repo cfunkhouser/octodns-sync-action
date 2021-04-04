@@ -8,6 +8,10 @@ inputs:
     description: "Analogous to octodns-sync's --doit flag. If false, no changes are made."
     default: "false"
     required: false
+  post_pr_comment:
+    description: "If true, post output to PR."
+    default: "false"
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"
