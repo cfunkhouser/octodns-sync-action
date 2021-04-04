@@ -19,3 +19,5 @@ runs:
     - ${{ inputs.octodns_config_file }}
     - "--doit"
     - "${{ inputs.doit }}"
+    - "--post_pr_comment"
+    - "${{ inputs.post_pr_comment }}"
