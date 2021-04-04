@@ -9,4 +9,4 @@ COPY . /src
 RUN python -m pip install --upgrade pip \
     && python -m pip install /src/.
 
-ENTRYPOINT [ "python", "-m", "octosync", "--config_file" ]
+ENTRYPOINT [ "python", "-m", "octosync", "--octodns_config_file" ]
