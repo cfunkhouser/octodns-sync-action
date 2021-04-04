@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Publish
-        uses: cfunkhouser/octodns-sync-action@v0.0.5
+        uses: cfunkhouser/octodns-sync-action@v0.0.6
         with:
           octodns_config_file: "config/to-cloudflare.yaml"
           doit: "true"
