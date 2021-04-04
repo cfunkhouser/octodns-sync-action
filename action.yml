@@ -12,9 +12,14 @@ inputs:
     description: "If true, post output to PR."
     default: "false"
     required: false
+  github_token:
+    description: "GitHub API Token for Actions."
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"
+  env:
+    GITHUB_TOKEN: ${{ inputs.github_token }}
   args:
     - ${{ inputs.octodns_config_file }}
     - "--doit"
