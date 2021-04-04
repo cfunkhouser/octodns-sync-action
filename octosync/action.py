@@ -1,6 +1,7 @@
 import contextlib
 import io
 import json
+import logging
 import os
 import requests
 
@@ -64,12 +65,14 @@ def sync_action(octodns_config_file: str, /,
 
 def _try_posting_pr_comment(body: str, /) -> bool:
     user = _PR_POST_USERNAME
-    token = os.environ.get('PR_COMMENT_TOKEN')
+    token = os.environ.get('GITHUB_TOKEN')
     if token is None:
+        logging.warn('No GITHUB_TOKEN, cannot continue')
         return False
 
     event_data_path = os.environ.get('GITHUB_EVENT_PATH')
     if event_data_path is None:
+        logging.warn('No GITHUB_EVENT_PATH, cannot continue')
         return False
 
     comments_url = None
@@ -77,6 +80,7 @@ def _try_posting_pr_comment(body: str, /) -> bool:
         with open(event_data_path, 'r') as event_data_file:
             event_data = json.load(event_data_file)
             comments_url = event_data['pull_request']['comments_url']
+        logging.info(f'Good news, everyone! comments_url = {comments_url}')
     except Exception:
         # Catch everything. If it didn't work, it didn't work.
         return False
@@ -93,4 +97,5 @@ def _post_pr_comment(
             'body': body,
         },
     )
+    logging.info(f'PR Comment Post Response:\n{resp}')
     return int(resp.status_code / 100) == 2
