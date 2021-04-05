@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import requests
+import typing
 
 from octodns import manager
 
@@ -11,6 +12,8 @@ from octodns import manager
 _HTML_PROVIDER_CLASS = 'octodns.provider.plan.PlanHtml'
 
 _PR_POST_USERNAME = 'octodns-sync-action'
+
+LOG = logging.getLogger('octosync')
 
 
 class SyncActionManager(manager.Manager):
@@ -33,18 +36,34 @@ class SyncActionManager(manager.Manager):
                 'Incorrect provider config for html')
 
 
+def _sanitize_bool(val: typing.Any, /) -> bool:
+    """Sanitize argument values to boolean.
+
+    Parsing boolean values is annoying in Python, and Fire is no exception.
+    See: https://github.com/google/python-fire/blob/master/docs/guide.md#boolean-arguments
+    """
+    if isinstance(val, str):
+        return val.lower() == 'true'
+    return bool(val)
+
+
 def sync_action(octodns_config_file: str, /,
                 doit: bool = False,
                 post_pr_comment: bool = False):
     """Command to handle executing the octodns sync as a GitHub Action."""
 
-    m: manager.Manager = None
-    if post_pr_comment:
-        m = SyncActionManager(octodns_config_file)
-    else:
-        m = manager.Manager(octodns_config_file)
+    doit = _sanitize_bool(doit)
+    post_pr_comment = _sanitize_bool(post_pr_comment)
 
+    logging.debug(
+        f'octodns_config_file ({type(octodns_config_file)}) = '
+        f'{octodns_config_file}, '
+        f'doit ({type(doit)}) = {doit}, '
+        f'post_pr_comment ({type(post_pr_comment)}) = {post_pr_comment}')
+
+    m = SyncActionManager(octodns_config_file)
     output_io = io.StringIO()
+
     with contextlib.redirect_stdout(output_io):
         m.sync(
             eligible_zones=[],
