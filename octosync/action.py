@@ -109,6 +109,9 @@ def _post_pr_comment(
         comments_url: str, user: str, token: str, body: str, /) -> bool:
     resp = requests.post(
         comments_url,
+        headers={
+            "Accept": "application/vnd.github.v3+json",
+        },
         auth=(user, token),
         json={
             'body': body,
