@@ -36,12 +36,10 @@ class SyncActionManager(manager.Manager):
                 'Incorrect provider config for html')
 
 
+# Parsing boolean values is annoying in Python, and Fire is no exception.
+# See: github.com/google/python-fire/blob/master/docs/guide.md#boolean-arguments # noqa: E501
 def _sanitize_bool(val: typing.Any, /) -> bool:
-    """Sanitize argument values to boolean.
-
-    Parsing boolean values is annoying in Python, and Fire is no exception.
-    See: https://github.com/google/python-fire/blob/master/docs/guide.md#boolean-arguments
-    """
+    """Sanitize argument values to boolean."""
     if isinstance(val, str):
         return val.lower() == 'true'
     return bool(val)
