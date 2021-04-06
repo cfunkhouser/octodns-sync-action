@@ -5,7 +5,9 @@ cloud provider using github.com/github/octodns.
 
 This is compatible with the OctoDNS `SplitYamlProvider`.
 
-## Example Workflow
+## Example Workflows
+
+### Publish Changes on Push to `main`
 
 ```yaml
 name: cloudflare-dns-sync
@@ -26,9 +28,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Publish
-        uses: cfunkhouser/octodns-sync-action@v0.0.9
+      - name: OctoDNS Sync
+        uses: cfunkhouser/octodns-sync-action@v0.0.10
         with:
           octodns_config_file: "config/to-cloudflare.yaml"
           doit: "true"
+```
+
+### Diffs as PR Comments
+
+```yaml
+name: cloudflare-dns-review
+on:
+  # Push changes to the correct DNS providers when changes to the YAML zone files
+  # are pushed to the main branch.
+  pull_request:
+env:
+  CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+jobs:
+  publish:
+    name: Publish DNS config from main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: OctoDNS Diff
+        uses: cfunkhouser/octodns-sync-action@v0.0.10
+        with:
+          octodns_config_file: "config/to-cloudflare.yaml"
+          post_pr_comment: "true"
 ```
