@@ -74,10 +74,8 @@ def sync_action(octodns_config_file: str, /,
             force=False,
         )
 
-    output = output_io.getvalue()
     if post_pr_comment:
-        _try_posting_pr_comment(output)
-    print(output)
+        _try_posting_pr_comment(output_io.getvalue())
 
 
 def _try_posting_pr_comment(body: str, /) -> bool:
@@ -107,6 +105,9 @@ def _try_posting_pr_comment(body: str, /) -> bool:
 
 def _post_pr_comment(
         comments_url: str, user: str, token: str, body: str, /) -> bool:
+
+    logging.debug(f'Attempting to post:\n{body}')
+
     resp = requests.post(
         comments_url,
         headers={
@@ -117,5 +118,8 @@ def _post_pr_comment(
             'body': body,
         },
     )
-    logging.info(f'PR Comment Post Response:\n{resp}\n{resp.text}')
+
+    logging.info(f'PR Comment Post Response: {resp}')
+    logging.debug(f'Full Response Payload:\n{resp.text}')
+
     return int(resp.status_code / 100) == 2
