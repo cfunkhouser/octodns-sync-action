@@ -117,5 +117,5 @@ def _post_pr_comment(
             'body': body,
         },
     )
-    logging.info(f'PR Comment Post Response:\n{resp}')
+    logging.info(f'PR Comment Post Response:\n{resp}\n{resp.text}')
     return int(resp.status_code / 100) == 2
