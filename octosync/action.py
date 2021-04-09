@@ -8,9 +8,7 @@ import typing
 from octodns import manager
 
 
-_HTML_PROVIDER_CLASS = 'octodns.provider.plan.PlanHtml'
-
-_PR_POST_USERNAME = 'octodns-sync-action'
+_MD_PROVIDER_CLASS = 'octodns.provider.plan.PlanMarkdown'
 
 LOG = logging.getLogger('octosync')
 
@@ -22,17 +20,18 @@ class SyncActionManager(manager.Manager):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # After super's __init__ is done, make sure there's a HTML plan output
-        # provider configured to make it nice for GitHub actions output.
+        # After super's __init__ is done, reset the plan outputs (effectively
+        # ignoring any configured in the configuration file) and set up a
+        # single Markdown plan output provider.
+        self.plan_outputs = {}
         try:
-            if 'html' not in self.plan_outputs:
-                _class = self._get_named_class(
-                    'plan_output', _HTML_PROVIDER_CLASS)
-                self.plan_outputs['html'] = _class(_HTML_PROVIDER_CLASS, **{})
-        except TypeError:
-            self.log.exception('Invalid plan_output config')
+            _class = self._get_named_class(
+                'plan_output', _MD_PROVIDER_CLASS)
+            self.plan_outputs['markdown'] = _class(_MD_PROVIDER_CLASS, **{})
+        except Exception:
+            self.log.exception('Failed to configure plan output provider.')
             raise manager.ManagerException(
-                'Incorrect provider config for html')
+                'Failed to configure plan output provider.')
 
 
 # Parsing boolean values is annoying in Python, and Fire is no exception.
@@ -76,7 +75,6 @@ def sync_action(octodns_config_file: str, /,
 
 
 def _try_posting_pr_comment(body: str, /) -> bool:
-    user = _PR_POST_USERNAME
     token = os.environ.get('GITHUB_TOKEN')
     if token is None:
         logging.warn('No GITHUB_TOKEN, cannot continue')
@@ -93,15 +91,16 @@ def _try_posting_pr_comment(body: str, /) -> bool:
             event_data = json.load(event_data_file)
             comments_url = event_data['pull_request']['comments_url']
         logging.info(f'Good news, everyone! comments_url = {comments_url}')
-    except Exception:
+    except Exception as e:
         # Catch everything. If it didn't work, it didn't work.
+        logging.exception(e)
         return False
 
-    return _post_pr_comment(comments_url, user, token, body)
+    return _post_pr_comment(comments_url, token, body)
 
 
 def _post_pr_comment(
-        comments_url: str, user: str, token: str, body: str, /) -> bool:
+        comments_url: str, token: str, body: str, /) -> bool:
 
     logging.debug(f'Attempting to post:\n{body}')
 
@@ -110,7 +109,8 @@ def _post_pr_comment(
         headers={
             "Accept": "application/vnd.github.v3+json",
         },
-        auth=(user, token),
+        # Username will be overridden by GitHub, but cannot be blank.
+        auth=('doesntmatter', token),
         json={
             'body': body,
         },
