@@ -1,6 +1,6 @@
 import setuptools
 
-__version__ = '0.0.12'
+__version__ = '0.0.14'
 
 setuptools.setup(
     name='octodns-sync-action',
@@ -20,7 +20,7 @@ setuptools.setup(
     ],
     python_requires='>=3.8',
     install_requires=[
-        'octodns @ https://github.com/octodns/octodns/archive/8668dd3e8b34b0032b0cbb6fa157ed7b182a3ee2.tar.gz#egg=octodns',
+        'octodns @ https://github.com/octodns/octodns/archive/8668dd3e8b34b0032b0cbb6fa157ed7b182a3ee2.tar.gz#egg=octodns',  # noqa: E501
         'fire~=0.4',
     ],
 )
