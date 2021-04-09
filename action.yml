@@ -17,7 +17,7 @@ inputs:
     required: false
 runs:
   using: "docker"
-  image: "Dockerfile"
+  image: "docker://ghcr.io/cfunkhouser/octodns-sync-action:v0.0.15"
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
   args:

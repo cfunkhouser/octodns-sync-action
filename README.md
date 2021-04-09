@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: OctoDNS Sync
-        uses: cfunkhouser/octodns-sync-action@v0.0.14
+        uses: cfunkhouser/octodns-sync-action@v0.0.15
         with:
           octodns_config_file: "config/to-cloudflare.yaml"
           doit: "true"
@@ -52,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: OctoDNS Diff
-        uses: cfunkhouser/octodns-sync-action@v0.0.14
+        uses: cfunkhouser/octodns-sync-action@v0.0.15
         with:
           octodns_config_file: "config/to-cloudflare.yaml"
           post_pr_comment: "true"
