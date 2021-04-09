@@ -59,20 +59,18 @@ def sync_action(octodns_config_file: str, /,
         f'doit ({type(doit)}) = {doit}, '
         f'post_pr_comment ({type(post_pr_comment)}) = {post_pr_comment}')
 
-    m = SyncActionManager(octodns_config_file)
     output_io = io.StringIO()
-
-    with contextlib.redirect_stdout(output_io):
-        m.sync(
-            eligible_zones=[],
-            eligible_sources=[],
-            eligible_targets=[],
-            dry_run=(not doit),
-            # As of now, I can't imagine a good reason to allow this. If you
-            # disagree with me, maybe explain your reasoning in the form of a
-            # PR.
-            force=False,
-        )
+    SyncActionManager(octodns_config_file).sync(
+        eligible_zones=[],
+        eligible_sources=[],
+        eligible_targets=[],
+        dry_run=(not doit),
+        # As of now, I can't imagine a good reason to allow forcing. If you
+        # disagree with me, maybe explain your reasoning in the form of a
+        # PR.
+        force=False,
+        plan_output_fh=output_io,
+    )
 
     if post_pr_comment:
         _try_posting_pr_comment(output_io.getvalue())

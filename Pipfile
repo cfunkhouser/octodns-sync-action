@@ -4,7 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-octodns = "~=0.9"
+# This is necessary until https://github.com/octodns/octodns/pull/689 gets
+# rolled into a proper octodns release.
+octodns = {file = "https://github.com/octodns/octodns/archive/8668dd3e8b34b0032b0cbb6fa157ed7b182a3ee2.tar.gz"}
 fire = "~=0.4"
 
 [dev-packages]
