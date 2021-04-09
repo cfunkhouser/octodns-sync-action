@@ -20,7 +20,7 @@ setuptools.setup(
     ],
     python_requires='>=3.8',
     install_requires=[
-        'octodns~=0.9',
+        'octodns @ https://github.com/octodns/octodns/archive/8668dd3e8b34b0032b0cbb6fa157ed7b182a3ee2.tar.gz#egg=octodns',
         'fire~=0.4',
     ],
 )
